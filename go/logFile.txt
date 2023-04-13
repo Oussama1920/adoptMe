@@ -1,0 +1,3 @@
+time="2023-04-13T15:48:59+02:00" level=info msg="Set log file to 'logFile.txt'"
+time="2023-04-13T15:50:59+02:00" level=error msg="error connecting to the database: %vfailed to connect to `host=192.168.99.102 user=postgres database=postgres`: dial error (timeout: dial tcp 192.168.99.102:5432: i/o timeout)"
+time="2023-04-13T15:50:59+02:00" level=fatal msg="failed to initialise db worker : %#v --> exiterror connecting to the database: failed to connect to `host=192.168.99.102 user=postgres database=postgres`: dial error (timeout: dial tcp 192.168.99.102:5432: i/o timeout)"

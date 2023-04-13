@@ -1,0 +1,9 @@
+service:
+  database:
+    host: "192.168.99.102"
+    port: 5432
+    user: "postgres"
+    password: "postgres"
+    sslMode : "disable"
+    dbname: "postgres"
+    poolMaxConns: 2
