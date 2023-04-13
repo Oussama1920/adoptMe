@@ -1,0 +1,7 @@
+-- Version 1.0
+
+-- ALTER SCHEMA frx OWNER TO g_adoptMe;
+CREATE SCHEMA IF NOT EXISTS adoptMe AUTHORIZATION g_adoptMe;
+
+GRANT ALL ON SCHEMA frx TO GROUP g_adoptMe;
+GRANT ALL ON SCHEMA frx TO GROUP support;

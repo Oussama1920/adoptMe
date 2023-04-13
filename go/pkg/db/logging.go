@@ -9,7 +9,7 @@ func (service *Db) AddUser(ctx context.Context, user User) error {
 
 	statement := `INSERT into users(name,firstname,address,dateOfBirth,phoneNumber) VALUES ($1, $2, $3, $4, $5)`
 
-	err := service.handler.QueryRow(ctx, statement, user.Name, user.FirstName, user.Address, user.DateOfBirth, user.PhoneNumber)
+	_, err := service.handler.Exec(ctx, statement, user.Name, user.FirstName, user.Address, user.DateOfBirth, user.PhoneNumber)
 	if err != nil {
 		return fmt.Errorf("failed to insert new User - error:%#v", err)
 	}

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -44,11 +45,15 @@ func main() {
 	// Simple group: v1
 	v1 := router.Group("/v1")
 	{
-		v1.POST("/signup", logging.SignUp(dbWorker, ctx))
-		//v1.GET("/login", submitEndpoint)
+		v1.POST("/signup", logging.SignUp(dbWorker, ctx, logger))
+		v1.GET("/login", func(c *gin.Context) {
+			//let's save the user
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "New User added successfully"})
+		})
 	}
 
 	router.Run(":8080")
+	logger.Info("serving on 8080 ...")
 }
 
 func initDB(ctx context.Context, appLog *logrus.Logger) (db.DbHandler, error) {
