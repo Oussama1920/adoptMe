@@ -29,6 +29,11 @@ type DbHandler interface {
 	IsDBUp(ctx context.Context) bool
 	Connect(ctx context.Context) error
 	AddUser(ctx context.Context, user User) error
+	Login(ctx context.Context, email string, password string) (*User, error)
+	GetVerificationCode(ctx context.Context, verificationCode string) (*User, error)
+	UpdateUser(ctx context.Context, user User) error
+	GetUserByEmail(ctx context.Context, email string) (*User, error)
+	GetUserById(ctx context.Context, id string) (*User, error)
 }
 
 // NewDB establish a connection with the db and return a DbHandler

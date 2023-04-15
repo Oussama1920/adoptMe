@@ -1,2 +1,1 @@
-time="2023-04-13T21:50:11+02:00" level=info msg="Set log file to 'logFile.txt'"
-time="2023-04-13T21:51:11+02:00" level=error msg="invalid character 'f' after object key:value pair"
+time="2023-04-15T20:08:47+02:00" level=info msg="Set log file to 'logFile.txt'"

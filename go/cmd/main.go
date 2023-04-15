@@ -5,13 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 
 	config "github.com/Oussama1920/adoptMe/go/pkg/config"
 	db "github.com/Oussama1920/adoptMe/go/pkg/db"
 	logging "github.com/Oussama1920/adoptMe/go/pkg/logging"
+	"github.com/Oussama1920/adoptMe/go/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -46,10 +46,18 @@ func main() {
 	v1 := router.Group("/v1")
 	{
 		v1.POST("/signup", logging.SignUp(dbWorker, ctx, logger))
-		v1.GET("/login", func(c *gin.Context) {
-			//let's save the user
-			c.IndentedJSON(http.StatusOK, gin.H{"message": "New User added successfully"})
-		})
+		v1.GET("/login", logging.Login(dbWorker, ctx, logger))
+	}
+	auth := router.Group("/auth")
+	{
+		auth.POST("/register", logging.SignUp(dbWorker, ctx, logger))
+		auth.POST("/login", logging.Login(dbWorker, ctx, logger))
+		auth.GET("/logout", logging.LogOut(dbWorker, ctx, logger))
+		auth.GET("/verifyemail/:verificationCode", logging.VerifyEmail(dbWorker, ctx, logger))
+	}
+	users := router.Group("/users")
+	{
+		users.GET("/me", middleware.DeserializeUser(dbWorker, ctx), logging.GetMe)
 	}
 
 	router.Run(":8080")
