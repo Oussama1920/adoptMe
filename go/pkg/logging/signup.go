@@ -26,11 +26,13 @@ func SignUp(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 			return
 		}
 		if newUser.Password != newUser.PasswordConfirm {
+			logger.Error("Passwords do not match")
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Passwords do not match"})
 			return
 		}
 		hashedPassword, err := utilis.HashPassword(newUser.Password)
 		if err != nil {
+			logger.Error(err)
 			c.IndentedJSON(http.StatusBadGateway, gin.H{"status": "error", "message": err.Error()})
 			return
 		}
@@ -67,6 +69,7 @@ func SignUp(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 		utilis.SendEmail(newUser, &emailData)
 
 		message := "We sent an email with a verification code to " + newUser.Email
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 
 		c.IndentedJSON(http.StatusCreated, gin.H{"status": "success", "message": message})
 	}
@@ -110,7 +113,7 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 			return
 		}
 		c.SetCookie("token", token, tokenConfig.TOKEN_MAXAGE*60, "/", "localhost", false, true)
-
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.JSON(http.StatusOK, gin.H{"status": "success", "token": token})
 
 	}

@@ -1,1 +1,2 @@
-time="2023-04-15T20:08:47+02:00" level=info msg="Set log file to 'logFile.txt'"
+time="2023-04-16T20:15:35+02:00" level=info msg="Set log file to 'logFile.txt'"
+time="2023-04-16T20:28:55+02:00" level=error msg="Key: 'SignInInput.Email' Error:Field validation for 'Email' failed on the 'required' tag\nKey: 'SignInInput.Password' Error:Field validation for 'Password' failed on the 'required' tag"
