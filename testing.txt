@@ -1,0 +1,7 @@
+## to INSERT User 
+
+curl -X POST localhost:8080/v1/signup -d '{"name":"djebbi","firstname":"oussama","address":"cité des travailleurs thibar Béja 9022","dateOfBirth":"10/08/1995","phonenumber" :"54690026","email":"oussama.djebbi@ensi-uma.tn","password":"password","passwordConfirm":"password"}'
+
+
+
+curl -X GET localhost:8080/v1/login -d '{"email":"oussama.djebbi@ensi-uma.tn","password":"password"}'
