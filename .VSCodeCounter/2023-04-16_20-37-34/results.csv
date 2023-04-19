@@ -1,0 +1,17 @@
+"filename", "language", "Go Work File", "Go Module File", "Go Checksum File", "Go", "YAML", "comment", "blank", "total"
+"/home/odjebbi/adoptMe/go.work", "Go Work File", 2, 0, 0, 0, 0, 0, 2, 4
+"/home/odjebbi/adoptMe/go/cmd/main.go", "Go", 0, 0, 0, 63, 0, 0, 13, 76
+"/home/odjebbi/adoptMe/go/config/config.yaml", "YAML", 0, 0, 0, 0, 19, 0, 2, 21
+"/home/odjebbi/adoptMe/go/go.mod", "Go Module File", 0, 58, 0, 0, 0, 0, 5, 63
+"/home/odjebbi/adoptMe/go/go.sum", "Go Checksum File", 0, 0, 712, 0, 0, 0, 1, 713
+"/home/odjebbi/adoptMe/go/pkg/config/config.go", "Go", 0, 0, 0, 19, 0, 0, 5, 24
+"/home/odjebbi/adoptMe/go/pkg/db/db.go", "Go", 0, 0, 0, 83, 0, 0, 15, 98
+"/home/odjebbi/adoptMe/go/pkg/db/db_config.go", "Go", 0, 0, 0, 84, 0, 0, 23, 107
+"/home/odjebbi/adoptMe/go/pkg/db/logging.go", "Go", 0, 0, 0, 99, 0, 0, 14, 113
+"/home/odjebbi/adoptMe/go/pkg/logging/signup.go", "Go", 0, 0, 0, 150, 0, 0, 28, 178
+"/home/odjebbi/adoptMe/go/pkg/middleware/deserialize-user.go", "Go", 0, 0, 0, 43, 0, 0, 10, 53
+"/home/odjebbi/adoptMe/go/pkg/utilis/email.go", "Go", 0, 0, 0, 77, 0, 0, 19, 96
+"/home/odjebbi/adoptMe/go/pkg/utilis/encode.go", "Go", 0, 0, 0, 13, 0, 0, 5, 18
+"/home/odjebbi/adoptMe/go/pkg/utilis/password.go", "Go", 0, 0, 0, 17, 0, 0, 7, 24
+"/home/odjebbi/adoptMe/go/pkg/utilis/token.go", "Go", 0, 0, 0, 41, 0, 0, 13, 54
+"Total", "-", 2, 58, 712, 689, 19, 0, 162, 1642

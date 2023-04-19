@@ -18,8 +18,9 @@ export const Login =(props) => {
             "Accept":'application/json'
         }
     })
+    console.warn("header",result.headers)
+
     result = await result.json()
-    console.warn("cooki",Cookies.get('token'))
 
     console.warn("result",result)
     Cookies.set('token', "", { expires: 7 });
