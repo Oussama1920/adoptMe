@@ -1,5 +1,9 @@
 import React, {useState} from "react"
+import "./LoginStyle.css"
 import props from 'prop-types';
+import Navbar from "./Navbar";
+import { Link } from "react-router-dom";
+
 export const Register =(props) => {
    const [email, setEmail] = useState('');
    const [password, setPass] = useState('');
@@ -23,6 +27,7 @@ export const Register =(props) => {
    }
     return (
         <div className="auth-form-container">
+                    <Navbar/>    
                 <h2>Register</h2>
           <form className="register-form" onSubmit={handleSubmit}>
           <label htmlFor ="name">name</label>
@@ -36,7 +41,9 @@ export const Register =(props) => {
 
             <button type="submit">Log In</button>
          </form>
-         <button className = "link-btn" onClick={()=> props.onFormSwitch('login')}>Already have an account? Login .</button>
+         <Link to="/login">
+                     <button className = "link-btn" type="button">Already have an account? Login.</button>
+        </Link>
        </div>
     )
 }

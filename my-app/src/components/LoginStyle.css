@@ -2,6 +2,7 @@
     text-align: center;
     display: flex;
     min-height: 100vh;
+    margin-top: 9%;
     align-items:center;
     justify-content:center;
     color: white;
@@ -19,6 +20,19 @@
       border: 1px solid white;
       border-radius: 10px;
       margin: 0.5rem;
+    }
+    .button {
+      border: none;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      color : #7439db;
+    }
+    .link-btn {
+      background: none;
+      color: white;
+      text-decoration: underline;
     }
   }
   
@@ -42,7 +56,6 @@
     cursor: pointer;
     color : #7439db;
   }
-  
   .link-btn {
     background: none;
     color: white;

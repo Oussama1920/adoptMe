@@ -1,7 +1,10 @@
 import React, {useState} from "react"
 import props from 'prop-types';
 import Cookies from 'js-cookie';
+import "./LoginStyle.css"
 import Navbar from "./Navbar";
+import { Link } from "react-router-dom";
+
 export const Login =(props) => {
    const [email, setEmail] = useState('')
    const [password, setPass] = useState('')
@@ -40,7 +43,9 @@ export const Login =(props) => {
             <input value = {password} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
             <button type="submit">Log In</button>
          </form>
-         <button className = "link-btn" onClick={()=> props.onFormSwitch('register')}>Don't have an account? Register here.</button>
+        <Link to="/signup">
+            <button className = "link-btn" type="button">Don't have an account? Register here.</button>
+        </Link>
        </div>
        
     )
