@@ -9,6 +9,7 @@ class Navbar extends Component {
         this.setState({clicked: !this.state.clicked})
     }
     render(){
+        
         return(
         <nav className="NavbarItems">
             <h1 className="navbar-logo">t'adoptini?</h1>
@@ -23,7 +24,12 @@ class Navbar extends Component {
                          </li>
                             );
                 })}
-                <button>Sign Up</button>      
+                 <Link to="/signup">
+                     <button type="button">Sign Up</button>
+                </Link>
+                <Link to="/login">
+                     <button type="button">Login</button>
+                </Link>
             </ul>
         </nav>
         );
