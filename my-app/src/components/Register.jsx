@@ -26,6 +26,8 @@ export const Register =(props) => {
     console.warn("result",result)
    }
     return (
+        <div className="register">
+
         <div className="auth-form-container">
                     <Navbar/>    
                 <h2>Register</h2>
@@ -44,6 +46,7 @@ export const Register =(props) => {
          <Link to="/login">
                      <button className = "link-btn" type="button">Already have an account? Login.</button>
         </Link>
+       </div>
        </div>
     )
 }

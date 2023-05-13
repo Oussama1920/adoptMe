@@ -103,9 +103,7 @@ button:hover{
         background: #01959a;
         transition: none;
     }
-    button{
-        display: none;
-    }
+
     .nav-links-mobile{
         display: block;
         text-align: center;
