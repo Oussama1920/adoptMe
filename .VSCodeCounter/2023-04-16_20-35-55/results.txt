@@ -1,0 +1,50 @@
+Date : 2023-04-16 20:35:55
+Directory : /home/odjebbi/adoptMe/go
+Total : 14 files,  1478 codes, 0 comments, 160 blanks, all 1638 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| Go Checksum File |          1 |        712 |          0 |          1 |        713 |
+| Go               |         11 |        689 |          0 |        152 |        841 |
+| Go Module File   |          1 |         58 |          0 |          5 |         63 |
+| YAML             |          1 |         19 |          0 |          2 |         21 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                        | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                           |         14 |      1,478 |          0 |        160 |      1,638 |
+| . (Files)                                                   |          2 |        770 |          0 |          6 |        776 |
+| cmd                                                         |          1 |         63 |          0 |         13 |         76 |
+| config                                                      |          1 |         19 |          0 |          2 |         21 |
+| pkg                                                         |         10 |        626 |          0 |        139 |        765 |
+| pkg/config                                                  |          1 |         19 |          0 |          5 |         24 |
+| pkg/db                                                      |          3 |        266 |          0 |         52 |        318 |
+| pkg/logging                                                 |          1 |        150 |          0 |         28 |        178 |
+| pkg/middleware                                              |          1 |         43 |          0 |         10 |         53 |
+| pkg/utilis                                                  |          4 |        148 |          0 |         44 |        192 |
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                    | language         | code       | comment    | blank      | total      |
++-------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| /home/odjebbi/adoptMe/go/cmd/main.go                        | Go               |         63 |          0 |         13 |         76 |
+| /home/odjebbi/adoptMe/go/config/config.yaml                 | YAML             |         19 |          0 |          2 |         21 |
+| /home/odjebbi/adoptMe/go/go.mod                             | Go Module File   |         58 |          0 |          5 |         63 |
+| /home/odjebbi/adoptMe/go/go.sum                             | Go Checksum File |        712 |          0 |          1 |        713 |
+| /home/odjebbi/adoptMe/go/pkg/config/config.go               | Go               |         19 |          0 |          5 |         24 |
+| /home/odjebbi/adoptMe/go/pkg/db/db.go                       | Go               |         83 |          0 |         15 |         98 |
+| /home/odjebbi/adoptMe/go/pkg/db/db_config.go                | Go               |         84 |          0 |         23 |        107 |
+| /home/odjebbi/adoptMe/go/pkg/db/logging.go                  | Go               |         99 |          0 |         14 |        113 |
+| /home/odjebbi/adoptMe/go/pkg/logging/signup.go              | Go               |        150 |          0 |         28 |        178 |
+| /home/odjebbi/adoptMe/go/pkg/middleware/deserialize-user.go | Go               |         43 |          0 |         10 |         53 |
+| /home/odjebbi/adoptMe/go/pkg/utilis/email.go                | Go               |         77 |          0 |         19 |         96 |
+| /home/odjebbi/adoptMe/go/pkg/utilis/encode.go               | Go               |         13 |          0 |          5 |         18 |
+| /home/odjebbi/adoptMe/go/pkg/utilis/password.go             | Go               |         17 |          0 |          7 |         24 |
+| /home/odjebbi/adoptMe/go/pkg/utilis/token.go                | Go               |         41 |          0 |         13 |         54 |
+| Total                                                       |                  |      1,478 |          0 |        160 |      1,638 |
++-------------------------------------------------------------+------------------+------------+------------+------------+------------+

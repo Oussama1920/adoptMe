@@ -61,7 +61,7 @@ func SignUp(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 
 		// ? Send Email
 		emailData := utilis.EmailData{
-			URL:       "http://localhost:8080" + "/verifyemail/" + code,
+			URL:       "http://localhost:8080" + "/auth/verifyemail/" + code,
 			FirstName: newUser.FirstName,
 			Subject:   "Your account verification code",
 		}
@@ -88,7 +88,7 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 		var user db.SignInInput
 		// Call BindJSON to bind the received JSON to
 		if err := c.BindJSON(&user); err != nil {
-			logger.Error(err)
+			logger.Error("failed to parse input : ", c.Request.Body, "  error is : ", err)
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Failed to Parse User"})
 			return
 		}
@@ -99,16 +99,20 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 			return
 		}
 		if !userResult.Verified {
+			logger.Error("Please verify your email")
+
 			c.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
 			return
 		}
 		if err := utilis.VerifyPassword(userResult.Password, user.Password); err != nil {
+			logger.Error("Invalid email or Password ")
 			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid email or Password " + err.Error()})
 			return
 		}
 		// Generate Token
 		token, err := utilis.GenerateToken(tokenConfig.TOKEN_EXPIRED_IN, userResult.ID, tokenConfig.TOKEN_SECRET)
 		if err != nil {
+			logger.Error(err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
 			return
 		}
@@ -124,14 +128,17 @@ func VerifyEmail(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Log
 	fn := func(c *gin.Context) {
 		code := c.Params.ByName("verificationCode")
 		verification_code := utilis.Encode(code)
-
+		logger.Println("received with code : ", code)
 		updatedUser, err := dbHandler.GetVerificationCode(ctx, verification_code)
 		if err != nil {
+			logger.Error("Invalid verification code or user doesn't exists")
 			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid verification code or user doesn't exists"})
 			return
 		}
 
 		if updatedUser.Verified {
+			logger.Error("User already verified")
+
 			c.JSON(http.StatusConflict, gin.H{"status": "fail", "message": "User already verified"})
 			return
 		}
@@ -140,6 +147,8 @@ func VerifyEmail(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Log
 		updatedUser.Verified = true
 		err = dbHandler.UpdateUser(ctx, *updatedUser)
 		if err != nil {
+			logger.Error("Failed to update user : ", err)
+
 			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid verification code or user doesn't exists"})
 			return
 		}

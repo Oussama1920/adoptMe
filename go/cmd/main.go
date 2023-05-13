@@ -46,7 +46,7 @@ func main() {
 	v1 := router.Group("/v1")
 	{
 		v1.POST("/signup", logging.SignUp(dbWorker, ctx, logger))
-		v1.GET("/login", logging.Login(dbWorker, ctx, logger))
+		v1.POST("/login", logging.Login(dbWorker, ctx, logger))
 	}
 	auth := router.Group("/auth")
 	{
