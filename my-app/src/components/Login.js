@@ -6,6 +6,7 @@ const LOGIN_URL = '/v1/login';
 
 export const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth(); // Extract the login function from the useAuth hook
 
     const userRef = useRef();
     const errRef = useRef();
@@ -45,7 +46,7 @@ export const Login = () => {
             if (status == "success") {
                 const accessToken = responseData?.token;
                 // Save token to local storage
-                localStorage.setItem('token', accessToken);
+                login(accessToken);
                 // Redirect the user to the home page or any other desired page
                 navigate('/'); // Assuming you're using React Router's navigate function
             } else {
