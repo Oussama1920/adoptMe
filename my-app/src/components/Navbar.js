@@ -33,10 +33,16 @@ const Navbar = () => {
                 {isAuthenticated ? (
                         <button type="button" onClick={handleLogout}>Log out</button> 
                 ) : (
+                    <div>
                     <Link to="/login">
                         <button type="button">Login</button>
                     </Link>
+                     <Link to="/signup">
+                        <button type="button">Sign up</button>
+                     </Link>
+                     </div> 
                 )}
+                
             </ul>
         </nav>
     );

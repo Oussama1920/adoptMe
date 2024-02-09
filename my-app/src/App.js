@@ -10,7 +10,7 @@ import About from "./routes/About";
 import Contact from "./routes/Contact";
 import Admin from "./components/Admin";
 import RequireAuth from "./components/RequireAuth"
-
+import {EmailVerification} from "./components/EmailVerification"
 function App() {
   const [currentForm,setCurrentForm] = useState('login');
   const [auth,setAuth] = React.useState(false);
@@ -33,8 +33,8 @@ function App() {
         <Route path="/signup" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-          <Route path="admin" element={<Admin />} />
-        </Route>
+        <Route path="admin" element={<Admin />} /></Route>
+        <Route path="/verify-email/:token" element={<EmailVerification/>}/>
        </Routes>
     </div>
   );

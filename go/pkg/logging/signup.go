@@ -58,14 +58,12 @@ func SignUp(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to insert user", "error": err.Error()})
 			return
 		}
-
 		// ? Send Email
 		emailData := utilis.EmailData{
-			URL:       "http://localhost:8080" + "/auth/verifyemail/" + code,
+			URL:       "http://localhost:3000" + "/verify-email/" + code,
 			FirstName: newUser.FirstName,
 			Subject:   "Your account verification code",
 		}
-
 		utilis.SendEmail(newUser, &emailData)
 
 		message := "We sent an email with a verification code to " + newUser.Email
@@ -126,6 +124,8 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 }
 func VerifyEmail(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+
 		code := c.Params.ByName("verificationCode")
 		verification_code := utilis.Encode(code)
 		logger.Println("received with code : ", code)
