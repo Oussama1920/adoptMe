@@ -2,14 +2,10 @@ import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
-import axios from '../api/axios';
 const LOGIN_URL = '/v1/login';
 
 export const Login = () => {
-    const { setAuth } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
 
     const userRef = useRef();
     const errRef = useRef();
@@ -40,19 +36,22 @@ export const Login = () => {
             "Accept":'application/json'
         }
         })
-            response = await response.json()
-            console.warn("result",response)
+        console.log("before :", response);
+
+            let responseData = await response.json()
         
-            console.log("HELLO :", JSON.stringify(response));
-            console.log(JSON.stringify(response?.token));
-            const accessToken = response?.token;
-            const roles = "102";
-            console.log(roles);
-            setAuth({ email, password, roles, accessToken })
-            setEmail('');
-            setPwd('');
-            navigate(from, { replace: true });
-        
+            console.log(JSON.stringify(responseData?.token));
+            const status = responseData?.status;
+            if (status == "success") {
+                const accessToken = responseData?.token;
+                // Save token to local storage
+                localStorage.setItem('token', accessToken);
+                // Redirect the user to the home page or any other desired page
+                navigate('/'); // Assuming you're using React Router's navigate function
+            } else {
+                navigate('/signup')
+            }
+
     }
 
     return (

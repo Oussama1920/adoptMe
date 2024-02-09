@@ -85,17 +85,18 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 
 	fn := func(c *gin.Context) {
 		//to DO : check request
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		var user db.SignInInput
 		// Call BindJSON to bind the received JSON to
 		if err := c.BindJSON(&user); err != nil {
 			logger.Error("failed to parse input : ", c.Request.Body, "  error is : ", err)
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Failed to Parse User"})
+			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Failed to Parse User"})
 			return
 		}
 		userResult, err := dbHandler.GetUserByEmail(ctx, strings.ToLower(user.Email))
 		if err != nil {
 			logger.Error(err)
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"status": "fail", "message": "Failed to connect"})
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Failed to connect"})
 			return
 		}
 		if !userResult.Verified {
@@ -117,7 +118,6 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 			return
 		}
 		c.SetCookie("token", token, tokenConfig.TOKEN_MAXAGE*60, "/", "localhost", false, true)
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.JSON(http.StatusOK, gin.H{"status": "success", "token": token})
 
 	}
