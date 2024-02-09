@@ -1,2 +1,1 @@
-time="2024-02-09T22:16:05+01:00" level=info msg="Set log file to 'logFile.txt'"
-time="2024-02-09T22:16:53+01:00" level=info msg="received with code :  F4zsW2rTnTsyxU4wMMX0"
+time="2024-02-09T22:40:53+01:00" level=info msg="Set log file to 'logFile.txt'"

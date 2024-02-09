@@ -61,7 +61,7 @@ func SignUp(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 		// ? Send Email
 		emailData := utilis.EmailData{
 			URL:       "http://localhost:3000" + "/verify-email/" + code,
-			FirstName: newUser.FirstName,
+			FirstName: newUser.Name,
 			Subject:   "Your account verification code",
 		}
 		utilis.SendEmail(newUser, &emailData)
