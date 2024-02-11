@@ -3,6 +3,7 @@ import "./NavbarStyles.css";
 import { MenuItems } from "./Menuitems";
 import { Link,useNavigate } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
+import logoImg from "../assets/logoTadoptini.png"
 
 const Navbar = () => {
     const [clicked, setClicked] = useState(false);
@@ -20,6 +21,7 @@ const Navbar = () => {
     return (
         <nav className="NavbarItems">
             <h1 className="navbar-logo">t'adoptini?</h1>
+
             <div className="menu-icons" onClick={handleClick}>
                 <i className={clicked ? "fas fa-times" : "fas fa-bars"}></i>
             </div>
@@ -31,7 +33,13 @@ const Navbar = () => {
                 ))}
 
                 {isAuthenticated ? (
-                        <button type="button" onClick={handleLogout}>Log out</button> 
+                    <div>
+                        <button type="button" onClick={handleLogout}>Log out</button>
+                        <Link to="/account">
+                        <button type="button">my account</button>
+                        </Link>
+ 
+                    </div>
                 ) : (
                     <div>
                     <Link to="/login">

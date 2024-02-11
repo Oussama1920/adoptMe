@@ -61,3 +61,27 @@
     color: white;
     text-decoration: underline;
   }
+
+  .fade-in {
+    animation: fadeIn ease-in-out 0.5s; /* Specify the animation */
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; } /* Start with opacity 0 */
+    100% { opacity: 1; } /* End with opacity 1 */
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text color */
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.error-icon {
+  margin-right: 10px; /* Spacing between icon and text */
+  color: #721c24; /* Dark red color */
+}

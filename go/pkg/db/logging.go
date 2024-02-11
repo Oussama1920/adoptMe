@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/jackc/pgx/v4"
 )
 
 func (service *Db) AddUser(ctx context.Context, user User) error {
@@ -55,19 +57,19 @@ func (service *Db) UpdateUser(ctx context.Context, user User) error {
 }
 func (service *Db) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	var user User
-	statement := `SELECT id,name,firstname,password,verified from users where email=$1`
+	statement := `SELECT id,name,firstname,password,verified,email from users where email=$1`
 
-	err := service.handler.QueryRow(ctx, statement, email).Scan(&user.ID, &user.Name, &user.FirstName, &user.Password, &user.Verified)
-	if err != nil {
+	err := service.handler.QueryRow(ctx, statement, email).Scan(&user.ID, &user.Name, &user.FirstName, &user.Password, &user.Verified, &user.Email)
+	if err != nil && err != pgx.ErrNoRows {
 		return nil, fmt.Errorf("failed to Get user by password - error:%#v", err)
 	}
 	return &user, nil
 }
 func (service *Db) GetUserById(ctx context.Context, id string) (*User, error) {
 	var user User
-	statement := `SELECT id,name,firstname,password from users where id=$1`
+	statement := `SELECT id,name,firstname,password,email,createdAt from users where id=$1`
 
-	err := service.handler.QueryRow(ctx, statement, id).Scan(&user.ID, &user.Name, &user.FirstName, &user.Password)
+	err := service.handler.QueryRow(ctx, statement, id).Scan(&user.ID, &user.Name, &user.FirstName, &user.Password, &user.Email, &user.CreatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Get user by id - error:%#v", err)
 	}
@@ -89,8 +91,8 @@ type User struct {
 	Role             string
 	VerificationCode string
 	Verified         bool
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
 }
 type SignInInput struct {
 	Email    string `json:"email"  binding:"required"`

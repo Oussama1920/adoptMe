@@ -14,11 +14,19 @@
     transform: translate(-50%);
     z-index: 9999;
 }
+
+
 .navbar-logo{
-    color: #222;
     font-size: 2rem;
-    cursor: pointer;
-}
+    background-repeat: no-repeat;
+    background-size: contain; /* Ensure the logo fits within the element */
+    background-position: left center; /* Adjust the position of the logo */
+    padding-left: 90px; /* Add padding to the left of the text to make space for the logo */
+    background-image: url('../assets/logoTadoptini.png'); 
+    background-size: auto 240%; /* Adjust the size of the logo (width: auto, height: 50%) */
+    background-position-y: -35px;
+} 
+
 .nav-menu{
     display: grid;
     grid-template-columns: repeat(5,auto);

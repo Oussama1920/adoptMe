@@ -1,7 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import './LoginStyle.css'; // Import CSS file for Login component styling
+import { AiOutlineCloseCircle } from 'react-icons/ai'; // Import the error icon from react-icons library
+
 const LOGIN_URL = '/v1/login';
 
 export const Login = () => {
@@ -26,115 +29,83 @@ export const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        
-            let item = {email,password}
-            
-            let response = await fetch("http://localhost:8080/v1/login", {
-            method: 'POST',
-            body: JSON.stringify(item),
-            Headers:{
-            "Content-Type" :'application/json',
-            "Accept":'application/json'
-        }
-        })
-        console.log("before :", response);
+        let item = { email, password };
 
-            let responseData = await response.json()
-        
-            console.log(JSON.stringify(responseData?.token));
-            const status = responseData?.status;
-            if (status == "success") {
-                const accessToken = responseData?.token;
-                // Save token to local storage
-                login(accessToken);
-                // Redirect the user to the home page or any other desired page
-                navigate('/'); // Assuming you're using React Router's navigate function
-            } else {
-                navigate('/signup')
+        try {
+            let response = await fetch("http://localhost:8080/v1/login", {
+                method: 'POST',
+                body: JSON.stringify(item),
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status === 403) {
+                    throw new Error('Please verify your email (check your email)');
+                } else if (response.status === 400) {
+                    throw new Error('Invalid email or password');
+                } else if (response.status === 404) {
+                    throw new Error('not user registred with this email');    
+                } else {
+                    throw new Error('Failed to fetch');
+                }
             }
 
+            let responseData = await response.json();
+            const accessToken = responseData?.token;
+            login(accessToken);
+            navigate('/');
+        } catch (error) {
+            setErrMsg(error.message);
+        }
     }
 
     return (
-
         <section className="login">
             <div className="auth-form-container">
-            <Navbar/>    
-            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-            <h2>Login</h2>
-            <form className="login-form" onSubmit={handleSubmit}>
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="text"
-                    id="email"
-                    ref={userRef}
-                    autoComplete="off"
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                    required
-                />
+                <Navbar />
+                {/* Apply fade-in animation to the error message */}
+                {errMsg && (
+                <div className="error-message fade-in">
+                    <AiOutlineCloseCircle className="error-icon" size={20} />
+                    <p aria-live="assertive">
+                        {errMsg}
+                    </p>
+                </div>
+            )}
+               { /* 
+                
 
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    onChange={(e) => setPwd(e.target.value)}
-                    value={password}
-                    required
-                />
-                <button>Sign In</button>
-            </form>
-            <Link to="/signup">
-                 <button className = "link-btn" type="button">Don't have an account? Register here.</button>
-            </Link>
-            </div>    
+                */ }
+                <h2>Login</h2>
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <label htmlFor="email">Email:</label>
+                    <input
+                        type="text"
+                        id="email"
+                        ref={userRef}
+                        autoComplete="off"
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                        required
+                    />
+
+                    <label htmlFor="password">Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        onChange={(e) => setPwd(e.target.value)}
+                        value={password}
+                        required
+                    />
+                    <button>Sign In</button>
+                </form>
+                <Link to="/signup">
+                    <button className="link-btn" type="button">Don't have an account? Register here.</button>
+                </Link>
+            </div>
         </section>
-
     )
 }
-
-
-/*
-<div className="login">
-
-<div className="auth-form-container">
-<Navbar/>    
- <h2>Login</h2>
-  <form className="login-form" onSubmit={handleSubmit}>
-    <label htmlFor ="email">email</label>
-    <input value = {email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="youremail@domain.com" id="email" name="email" />
-    <label value = {password} for ="password ">password</label>
-    <input value = {password} onChange={(e) => setPass(e.target.value)} type="password" placeholder="*********" id="password" name="password" />
-    <button type="submit">Log In</button>
- </form>
-<Link to="/signup">
-    <button className = "link-btn" type="button">Don't have an account? Register here.</button>
-</Link>
-</div>
-</div>
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

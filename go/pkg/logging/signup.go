@@ -97,15 +97,25 @@ func Login(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) g
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Failed to connect"})
 			return
 		}
-		if !userResult.Verified {
-			logger.Error("Please verify your email")
+		logger.Info("user email: ", user.Email)
+		logger.Info("user password: ", user.Password)
 
-			c.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
+		// check if user exist
+		if userResult.Email == "" {
+			logger.Error("no user found with for this email")
+			c.JSON(http.StatusNotFound, gin.H{"status": "failed", "message": "Failed to connect"})
 			return
+
 		}
 		if err := utilis.VerifyPassword(userResult.Password, user.Password); err != nil {
 			logger.Error("Invalid email or Password ")
 			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid email or Password " + err.Error()})
+			return
+		}
+		if !userResult.Verified {
+			logger.Error("Please verify your email")
+
+			c.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
 			return
 		}
 		// Generate Token
@@ -169,6 +179,67 @@ func LogOut(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 	return gin.HandlerFunc(fn)
 }
 func GetMe(ctx *gin.Context) {
+	currentUser := ctx.MustGet("currentUser").(*db.User)
+
+	userResponse := &db.UserResponse{
+		ID:        currentUser.ID,
+		Name:      currentUser.Name,
+		Email:     currentUser.Email,
+		Photo:     currentUser.Photo,
+		Role:      currentUser.Role,
+		Provider:  currentUser.Provider,
+		CreatedAt: currentUser.CreatedAt,
+		UpdatedAt: currentUser.UpdatedAt,
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"user": userResponse}})
+}
+
+func GetUser(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) gin.HandlerFunc {
+
+	fn := func(c *gin.Context) {
+		var token string
+
+		cookie, err := c.Cookie("token")
+
+		authorizationHeader := c.Request.Header.Get("Authorization")
+		fields := strings.Fields(authorizationHeader)
+
+		if len(fields) != 0 && fields[0] == "Bearer" {
+			token = fields[1]
+		} else if err == nil {
+			token = cookie
+		}
+
+		if token == "" {
+			logger.Error("Invalid email or Password ")
+			c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "You are not logged in"})
+		}
+		var tokenConfig utilis.TokenConfig
+
+		if err := config.GetDataConfiguration("service.token", &tokenConfig); err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail to parse config", "message": err.Error()})
+		}
+		sub, err := utilis.ValidateToken(token, tokenConfig.TOKEN_SECRET)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": err.Error()})
+			return
+		}
+
+		user, err := dbHandler.GetUserById(ctx, sub.(string))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "the user belonging to this token no logger exists"})
+			return
+		}
+		logger.Infof("founded user is : %v", user)
+		c.JSON(http.StatusOK, gin.H{"status": "success", "user": user})
+
+	}
+
+	return gin.HandlerFunc(fn)
+}
+
+func UpdateUser(ctx *gin.Context) {
 	currentUser := ctx.MustGet("currentUser").(*db.User)
 
 	userResponse := &db.UserResponse{

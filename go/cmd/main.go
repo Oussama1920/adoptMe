@@ -5,13 +5,16 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
+
+	utilis "github.com/Oussama1920/adoptMe/go/pkg/utilis"
 
 	config "github.com/Oussama1920/adoptMe/go/pkg/config"
 	db "github.com/Oussama1920/adoptMe/go/pkg/db"
 	logging "github.com/Oussama1920/adoptMe/go/pkg/logging"
-	"github.com/Oussama1920/adoptMe/go/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -25,6 +28,8 @@ func main() {
 	config.Init(*configFilename, configPaths)
 
 	router := gin.Default()
+	router.Use(corsMiddleware())
+
 	logger := logrus.New()
 	ctx, _ := context.WithCancel(context.Background())
 
@@ -38,7 +43,7 @@ func main() {
 	logger.Infof("Set log file to '%s'", file.Name())
 	dbWorker, err := initDB(ctx, logger)
 	if err != nil {
-		logger.Fatal("failed to initialise db worker : %#v --> exit", err)
+		logger.Fatalf("failed to initialise db worker : %#v --> exit", err)
 		os.Exit(1)
 	}
 
@@ -47,17 +52,18 @@ func main() {
 	{
 		v1.POST("/signup", logging.SignUp(dbWorker, ctx, logger))
 		v1.POST("/login", logging.Login(dbWorker, ctx, logger))
+		v1.GET("/verifyemail/:verificationCode", logging.VerifyEmail(dbWorker, ctx, logger))
+
 	}
 	auth := router.Group("/auth")
 	{
-		auth.POST("/register", logging.SignUp(dbWorker, ctx, logger))
-		auth.POST("/login", logging.Login(dbWorker, ctx, logger))
-		auth.GET("/logout", logging.LogOut(dbWorker, ctx, logger))
-		auth.GET("/verifyemail/:verificationCode", logging.VerifyEmail(dbWorker, ctx, logger))
-	}
-	users := router.Group("/users")
-	{
-		users.GET("/me", middleware.DeserializeUser(dbWorker, ctx), logging.GetMe)
+		auth.Use(corsAuthentication())
+		users := auth.Group("/users")
+		{
+			auth.GET("/logout", logging.LogOut(dbWorker, ctx, logger))
+			users.GET("/me", logging.GetUser(dbWorker, ctx, logger))
+			//users.PUT("/me", middleware.DeserializeUser(dbWorker, ctx), logging.GetMe)
+		}
 	}
 
 	router.Run(":8080")
@@ -72,4 +78,58 @@ func initDB(ctx context.Context, appLog *logrus.Logger) (db.DbHandler, error) {
 	}
 	return db.NewDB(ctx, dbc, appLog)
 
+}
+
+func corsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Handle preflight OPTIONS requests
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusOK)
+			return
+		}
+		// Continue to the next middleware or route handler
+		c.Next()
+
+	}
+}
+
+func corsAuthentication() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Middleware to verify authentication token
+		// Get the authentication token from the request headers
+		var token string
+		cookie, err := c.Cookie("token")
+
+		authorizationHeader := c.Request.Header.Get("Authorization")
+		fields := strings.Fields(authorizationHeader)
+
+		if len(fields) != 0 && fields[0] == "Bearer" {
+			token = fields[1]
+		} else if err == nil {
+			token = cookie
+		}
+
+		if token == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "You are not logged in"})
+			return
+		}
+		var tokenConfig utilis.TokenConfig
+
+		if err := config.GetDataConfiguration("service.token", &tokenConfig); err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail to parse config", "message": err.Error()})
+		}
+		_, err = utilis.ValidateToken(token, tokenConfig.TOKEN_SECRET)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": err.Error()})
+			return
+		}
+
+		// Continue to the next middleware or route handler
+		c.Next()
+
+	}
 }

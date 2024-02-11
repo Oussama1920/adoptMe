@@ -8,6 +8,7 @@ import Home from "./routes/Home";
 import Signup from "./routes/Signup";
 import About from "./routes/About";
 import Contact from "./routes/Contact";
+import Account from "./components/Account";
 import Admin from "./components/Admin";
 import RequireAuth from "./components/RequireAuth"
 import {EmailVerification} from "./components/EmailVerification"
@@ -33,8 +34,9 @@ function App() {
         <Route path="/signup" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-        <Route path="admin" element={<Admin />} /></Route>
+        <Route path="admin" element={<Admin/>} /></Route>
         <Route path="/verify-email/:token" element={<EmailVerification/>}/>
+        <Route path="/account" element={<Account/>}/>
        </Routes>
     </div>
   );
