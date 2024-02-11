@@ -39,7 +39,7 @@ func (service *Db) GetVerificationCode(ctx context.Context, verificationCode str
 	}
 	return &user, nil
 }
-func (service *Db) UpdateUser(ctx context.Context, user User) error {
+func (service *Db) VerifyUser(ctx context.Context, user User) error {
 
 	statement := `
 	UPDATE users
@@ -67,13 +67,42 @@ func (service *Db) GetUserByEmail(ctx context.Context, email string) (*User, err
 }
 func (service *Db) GetUserById(ctx context.Context, id string) (*User, error) {
 	var user User
-	statement := `SELECT id,name,firstname,password,email,createdAt from users where id=$1`
+	statement := `SELECT id,name,firstname,password,email,createdAt,address,phoneNumber,updatedAt,dateOfBirth from users where id=$1`
 
-	err := service.handler.QueryRow(ctx, statement, id).Scan(&user.ID, &user.Name, &user.FirstName, &user.Password, &user.Email, &user.CreatedAt)
+	err := service.handler.QueryRow(ctx, statement, id).Scan(&user.ID, &user.Name, &user.FirstName, &user.Password, &user.Email, &user.CreatedAt, &user.Address, &user.PhoneNumber, &user.UpdatedAt, &user.DateOfBirth)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Get user by id - error:%#v", err)
 	}
 	return &user, nil
+}
+func (service *Db) UpdateUser(ctx context.Context, user User, newData User) error {
+
+	statement := `
+	UPDATE users
+	SET 
+	firstName =  $1,
+	phoneNumber =  $2,
+	dateOfBirth = $3,
+	updatedAt= $4,
+	photo = $5,
+	address= $6,
+	name=$7
+    WHERE id = $8
+	`
+	dateOfBirth, err := time.Parse(time.RFC3339, newData.DateOfBirth)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+	}
+
+	// Format the time to extract just the date portion
+	dateOnly := dateOfBirth.Format("2006-01-02")
+
+	_, err = service.handler.Exec(ctx, statement, newData.FirstName, newData.PhoneNumber, dateOnly, time.Now(), newData.Photo, newData.Address, newData.Name, user.ID)
+	if err != nil {
+		return fmt.Errorf("failed to update new User - error:%#v", err)
+	}
+
+	return nil
 }
 
 type User struct {

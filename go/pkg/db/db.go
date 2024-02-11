@@ -31,7 +31,8 @@ type DbHandler interface {
 	AddUser(ctx context.Context, user User) error
 	Login(ctx context.Context, email string, password string) (*User, error)
 	GetVerificationCode(ctx context.Context, verificationCode string) (*User, error)
-	UpdateUser(ctx context.Context, user User) error
+	VerifyUser(ctx context.Context, user User) error
+	UpdateUser(ctx context.Context, user User, newData User) error
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetUserById(ctx context.Context, id string) (*User, error)
 }

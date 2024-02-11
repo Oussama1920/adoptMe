@@ -57,11 +57,15 @@ func main() {
 	}
 	auth := router.Group("/auth")
 	{
-		auth.Use(corsAuthentication())
 		users := auth.Group("/users")
 		{
 			auth.GET("/logout", logging.LogOut(dbWorker, ctx, logger))
-			users.GET("/me", logging.GetUser(dbWorker, ctx, logger))
+			//	users.GET("/me", logging.GetUser(dbWorker, ctx, logger))
+			users.GET("/me", corsAuthentication(dbWorker, ctx, logger), logging.GetMe)
+			users.PUT("/me", corsAuthentication(dbWorker, ctx, logger), func(c *gin.Context) {
+				logging.UpdateUser(c, dbWorker, logger)
+			})
+
 			//users.PUT("/me", middleware.DeserializeUser(dbWorker, ctx), logging.GetMe)
 		}
 	}
@@ -97,7 +101,7 @@ func corsMiddleware() gin.HandlerFunc {
 	}
 }
 
-func corsAuthentication() gin.HandlerFunc {
+func corsAuthentication(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Middleware to verify authentication token
 		// Get the authentication token from the request headers
@@ -122,11 +126,18 @@ func corsAuthentication() gin.HandlerFunc {
 		if err := config.GetDataConfiguration("service.token", &tokenConfig); err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail to parse config", "message": err.Error()})
 		}
-		_, err = utilis.ValidateToken(token, tokenConfig.TOKEN_SECRET)
+		sub, err := utilis.ValidateToken(token, tokenConfig.TOKEN_SECRET)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": err.Error()})
 			return
 		}
+		user, err := dbHandler.GetUserById(ctx, sub.(string))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "the user belonging to this token no logger exists"})
+			return
+		}
+		logger.Infof("found user is %v", user)
+		c.Set("currentUser", user)
 
 		// Continue to the next middleware or route handler
 		c.Next()

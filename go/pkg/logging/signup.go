@@ -155,7 +155,7 @@ func VerifyEmail(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Log
 
 		updatedUser.VerificationCode = ""
 		updatedUser.Verified = true
-		err = dbHandler.UpdateUser(ctx, *updatedUser)
+		err = dbHandler.VerifyUser(ctx, *updatedUser)
 		if err != nil {
 			logger.Error("Failed to update user : ", err)
 
@@ -182,19 +182,22 @@ func GetMe(ctx *gin.Context) {
 	currentUser := ctx.MustGet("currentUser").(*db.User)
 
 	userResponse := &db.UserResponse{
-		ID:        currentUser.ID,
-		Name:      currentUser.Name,
-		Email:     currentUser.Email,
-		Photo:     currentUser.Photo,
-		Role:      currentUser.Role,
-		Provider:  currentUser.Provider,
-		CreatedAt: currentUser.CreatedAt,
-		UpdatedAt: currentUser.UpdatedAt,
+		ID:          currentUser.ID,
+		Name:        currentUser.Name,
+		Email:       currentUser.Email,
+		Photo:       currentUser.Photo,
+		Role:        currentUser.Role,
+		Provider:    currentUser.Provider,
+		CreatedAt:   currentUser.CreatedAt,
+		UpdatedAt:   currentUser.UpdatedAt,
+		FirstName:   currentUser.FirstName,
+		DateOfBirth: currentUser.DateOfBirth,
+		PhoneNumber: currentUser.PhoneNumber,
+		Address:     currentUser.Address,
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"user": userResponse}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "user": userResponse})
 }
-
 func GetUser(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) gin.HandlerFunc {
 
 	fn := func(c *gin.Context) {
@@ -239,19 +242,22 @@ func GetUser(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger)
 	return gin.HandlerFunc(fn)
 }
 
-func UpdateUser(ctx *gin.Context) {
-	currentUser := ctx.MustGet("currentUser").(*db.User)
-
-	userResponse := &db.UserResponse{
-		ID:        currentUser.ID,
-		Name:      currentUser.Name,
-		Email:     currentUser.Email,
-		Photo:     currentUser.Photo,
-		Role:      currentUser.Role,
-		Provider:  currentUser.Provider,
-		CreatedAt: currentUser.CreatedAt,
-		UpdatedAt: currentUser.UpdatedAt,
+func UpdateUser(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
+	currentUser := c.MustGet("currentUser").(*db.User)
+	// Call BindJSON to bind the received JSON to
+	var receivedUser db.User
+	if err := c.BindJSON(&receivedUser); err != nil {
+		logger.Error("failed to parse input : ", c.Request.Body, "  error is : ", err)
+		c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Failed to Parse User"})
+		return
 	}
-
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"user": userResponse}})
+	logger.Infof("current user %v: ", currentUser)
+	logger.Infof("new user %v: ", receivedUser)
+	err := dbHandler.UpdateUser(c, *currentUser, receivedUser)
+	if err != nil {
+		logger.Error("failed to update user input :  error is : ", err)
+		c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Failed to updated User"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"user": receivedUser}})
 }

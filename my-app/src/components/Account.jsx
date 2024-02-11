@@ -9,9 +9,9 @@ function Account() {
     const [user, setUser] = useState({
         email: '',
         name: '',
-        firstName: '',
+        firstname: '',
         address: '',
-        phoneNumber: '',
+        phonenumber: '',
         dateOfBirth: '',
         created_at: '',
         updated_at: ''
@@ -34,7 +34,6 @@ function Account() {
             if (!response.ok) {
                 throw new Error('Failed to fetch user data');
             }
-            console.log("response is: ",response)
 
             // Parse the response JSON
             const responseData = await response.json();
@@ -95,7 +94,7 @@ function Account() {
                         <input type="text" name="name" value={user.name} onChange={handleChange} />
 
                         <label>First Name:</label>
-                        <input type="text" name="firstName" value={user.firstName} onChange={handleChange} />
+                        <input type="text" name="firstname" value={user.firstname} onChange={handleChange} />
 
                         <label>Address:</label>
                         <input type="text" name="address" value={user.address} onChange={handleChange} />
@@ -103,8 +102,8 @@ function Account() {
 
                     <div className="field-group">
                         <label>Phone Number:</label>
-                        <input type="text" name="phoneNumber" value={user.phoneNumber} onChange={handleChange} />
-                        
+                        <input type="text" name="phonenumber" value={user.phonenumber} onChange={handleChange} />
+                            
                         <label>Date of Birth:</label>
                         <DatePicker
                             selected={user.dateOfBirth ? new Date(user.dateOfBirth) : null}
