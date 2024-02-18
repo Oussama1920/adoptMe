@@ -104,6 +104,31 @@ func (service *Db) UpdateUser(ctx context.Context, user User, newData User) erro
 
 	return nil
 }
+func (service *Db) AddPet(ctx context.Context, pet Pet, userID string) (int, error) {
+	statement := `
+		INSERT INTO pets(name, user_id, type, age, photo, created_at) 
+		VALUES ($1, $2, $3, $4, $5, $6) 
+		RETURNING id
+	`
+
+	var id int
+	row := service.handler.QueryRow(ctx, statement, pet.Name, userID, pet.Type, pet.Age, pet.Photo, pet.CreatedAt)
+	if err := row.Scan(&id); err != nil {
+		return 0, fmt.Errorf("failed to insert new pet - error:%#v", err)
+	}
+
+	return id, nil
+}
+func (service *Db) GetPet(ctx context.Context, id int) (*Pet, error) {
+	var pet Pet
+	statement := `SELECT id,user_id,name,type,age,photo,created_at from pets where id=$1`
+
+	err := service.handler.QueryRow(ctx, statement, id).Scan(&pet.ID, &pet.UserId, &pet.Name, &pet.Type, &pet.Age, &pet.Photo, &pet.CreatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to Get Pet by id - error:%#v", err)
+	}
+	return &pet, nil
+}
 
 type User struct {
 	ID               string `json:"id"`
@@ -140,4 +165,19 @@ type UserResponse struct {
 	Provider    string    `json:"provider"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type Pet struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	Age       string    `json:"age"`
+	Type      string    `json:"type"`
+	UserId    string    `json:"user_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Photo     string    `json:"photo"`  // used to save local path in database separated by comma
+	Images    []Image   `json:"images"` // used to parse data from request
+}
+type Image struct {
+	DataURL string      `json:"data_url"`
+	File    interface{} `json:"file"`
 }

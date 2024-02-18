@@ -24,3 +24,17 @@ CREATE TABLE users
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 ALTER TABLE adoptMe.users OWNER TO g_adoptMe;
+
+/*create pets table */
+CREATE TABLE pets
+(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id text,
+  name character varying(20),
+  type character varying(20),
+  age character varying(20),
+  photo text,
+  createdAt timestamp,
+  CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+ALTER TABLE adoptMe.users OWNER TO g_adoptMe;

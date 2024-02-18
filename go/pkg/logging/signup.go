@@ -2,7 +2,12 @@ package logging
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -260,4 +265,123 @@ func UpdateUser(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"user": receivedUser}})
+}
+
+func GetPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
+
+	id := c.Param("id")
+	if id == "" {
+		logger.Error("id should not be empty")
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "id is empty"})
+		return
+	}
+	// Convert the id parameter to an integer
+	petID, err := strconv.Atoi(id)
+	if err != nil {
+		// If conversion fails, return an error response
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID, id should be an int"})
+		return
+	}
+
+	pet, err := dbHandler.GetPet(c, petID)
+	if err != nil {
+		logger.Error(err)
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to insert user", "error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusCreated, gin.H{"status": "success", "pet": pet})
+}
+
+func generateUniqueFilename(userId, extension string, photoId int) string {
+
+	return userId + strconv.Itoa(photoId) + extension
+}
+
+func getFileExtension(dataURL string) string {
+	// Split the data URL by comma
+	parts := strings.Split(dataURL, ",")
+	// Check if there are parts after splitting
+	if len(parts) != 2 {
+		return "" // Invalid data URL format
+	}
+
+	// Extract the base64 encoded data
+	firstSplit := parts[0]
+
+	parts2 := strings.Split(firstSplit, ";")
+	// Check if there are parts after splitting
+	if len(parts2) != 2 {
+		return "" // Invalid data URL format
+	}
+
+	// Extract the MIME type from the data URL
+	mimeType := strings.Split(parts2[0], ";")[0]
+	fmt.Println("mimeType : ", mimeType)
+
+	// Extract the file extension from the MIME type
+	switch mimeType {
+	case "data:image/png":
+		return ".png"
+	case "data:image/jpeg":
+		return ".jpg"
+	case "data:image/gif":
+		return ".gif"
+	default:
+		return "" // Unsupported MIME type or no extension found
+	}
+}
+
+func AddPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
+
+	currentUser := c.MustGet("currentUser").(*db.User)
+	var newPet db.Pet
+	// Call BindJSON to bind the received JSON to
+
+	if err := c.BindJSON(&newPet); err != nil {
+		logger.Error(err)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Failed to Parse Pet"})
+		return
+	}
+	newPet.CreatedAt = time.Now()
+	listOfphotoPaths := ""
+	// now we saved the annonce to database so let's save the images :
+	// Process each image
+	for _, img := range newPet.Images {
+		// Decode base64 data URL
+		data, err := base64.StdEncoding.DecodeString(img.DataURL[strings.IndexByte(img.DataURL, ',')+1:])
+		if err != nil {
+			logger.Errorf("failed to decode image: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode image"})
+			return
+		}
+
+		// Save image to file system
+		fileExtension := getFileExtension(img.DataURL)
+		if fileExtension == "" {
+			logger.Error("unsupported extension")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "unsupported extension"})
+
+		}
+		filename := generateUniqueFilename(currentUser.ID, fileExtension, newPet.ID) // Implement this function to generate a unique filename
+		filePath := filepath.Join("/home/odjebbi/uploads", filename)
+		if err := os.WriteFile(filePath, data, 0644); err != nil {
+			logger.Errorf("failed to save file: %v", err)
+
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save image"})
+			return
+		}
+		listOfphotoPaths = listOfphotoPaths + filePath + ","
+
+		// Now you have the image saved in your file system, you can save the filename or URL to your database
+		// Example: Save filename to database
+		// YourDatabaseModel.Create(filename)
+	}
+	newPet.Photo = listOfphotoPaths
+	id, err := dbHandler.AddPet(c, newPet, currentUser.ID)
+	if err != nil {
+		logger.Error(err)
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to insert user", "error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusCreated, gin.H{"status": "success", "id": id})
 }

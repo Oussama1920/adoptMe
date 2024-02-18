@@ -65,9 +65,17 @@ func main() {
 			users.PUT("/me", corsAuthentication(dbWorker, ctx, logger), func(c *gin.Context) {
 				logging.UpdateUser(c, dbWorker, logger)
 			})
-
 			//users.PUT("/me", middleware.DeserializeUser(dbWorker, ctx), logging.GetMe)
 		}
+	}
+	pets := v1.Group("/pets")
+	{
+		pets.POST("/pet", corsAuthentication(dbWorker, ctx, logger), func(c *gin.Context) {
+			logging.AddPet(c, dbWorker, logger)
+		})
+		pets.GET("/pet/:id", func(c *gin.Context) {
+			logging.GetPet(c, dbWorker, logger)
+		})
 	}
 
 	router.Run(":8080")

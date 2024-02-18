@@ -35,6 +35,8 @@ type DbHandler interface {
 	UpdateUser(ctx context.Context, user User, newData User) error
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetUserById(ctx context.Context, id string) (*User, error)
+	AddPet(ctx context.Context, pet Pet, userID string) (int, error)
+	GetPet(ctx context.Context, id int) (*Pet, error)
 }
 
 // NewDB establish a connection with the db and return a DbHandler
@@ -47,7 +49,7 @@ func NewDB(ctx context.Context, dbc DBConfig, appLog *logrus.Logger) (DbHandler,
 	// Connect to the "parameters" database.
 	pool, err := pgxpool.ConnectConfig(ctx, cfg)
 	if err != nil {
-		appLog.Error("error connecting to the database: %v", err)
+		appLog.Errorf("error connecting to the database: %v", err)
 		return nil, fmt.Errorf("error connecting to the database: %+v", err)
 	}
 

@@ -1,0 +1,86 @@
+
+.add-pet {
+  text-align: center;
+  display: flex;
+  min-height: 100vh;
+  margin-top: 9%;
+  align-items:center;
+  justify-content:center;
+  color: white;
+  background-image: linear-gradient(79deg,#7439db,#C66FBC 48%,#F7944D)
+/* Add any other styles for AddPet */
+}
+.add-pet select {
+  width: 200px; /* Set the width as per your preference */
+  display: flex;
+  flex-direction: column; /* Align form items vertically */
+  align-items: center;
+
+}
+
+.add-pet form {
+  display: flex;
+  flex-direction: column; /* Align form items vertically */
+  align-items: center;
+}
+
+.button-annonce {
+    text-decoration: none;
+    position: relative;
+    border: none;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #fff;
+    width: 9em;
+    height: 3em;
+    line-height: 0.5em;
+    text-align: center;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 300%;
+    border-radius: 30px;
+    z-index: 1;
+  }
+  
+  .button-annonce:hover {
+    animation: ani 8s linear infinite;
+    border: none;
+  }
+  
+  @keyframes ani {
+    0% {
+      background-position: 0%;
+    }
+  
+    100% {
+      background-position: 400%;
+    }
+  }
+  
+  .button-annonce:before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 400%;
+    border-radius: 35px;
+    transition: 1s;
+  }
+  
+  .button-annonce:hover::before {
+    filter: blur(20px);
+  }
+  
+  .button-annonce:active {
+    background: linear-gradient(32deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+  }
+  
+  .add-pet form .button-annonce {
+  margin-top: 20px; /* Add space between button and other elements */
+}
+
+

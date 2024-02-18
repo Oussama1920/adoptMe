@@ -11,6 +11,8 @@ import Contact from "./routes/Contact";
 import Account from "./components/Account";
 import Admin from "./components/Admin";
 import RequireAuth from "./components/RequireAuth"
+import Pet from "./components/PetPage"
+
 import {EmailVerification} from "./components/EmailVerification"
 function App() {
   const [currentForm,setCurrentForm] = useState('login');
@@ -37,6 +39,7 @@ function App() {
         <Route path="admin" element={<Admin/>} /></Route>
         <Route path="/verify-email/:token" element={<EmailVerification/>}/>
         <Route path="/account" element={<Account/>}/>
+        <Route path="/pet/:id" element={<Pet/>}/>
        </Routes>
     </div>
   );
