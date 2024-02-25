@@ -15,6 +15,7 @@ import (
 	config "github.com/Oussama1920/adoptMe/go/pkg/config"
 	db "github.com/Oussama1920/adoptMe/go/pkg/db"
 	logging "github.com/Oussama1920/adoptMe/go/pkg/logging"
+	pet "github.com/Oussama1920/adoptMe/go/pkg/pet"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -76,6 +77,10 @@ func main() {
 		pets.GET("/pet/:id", func(c *gin.Context) {
 			logging.GetPet(c, dbWorker, logger)
 		})
+		pets.POST("/pet/search", func(c *gin.Context) {
+			pet.SearchPet(c, dbWorker, logger)
+		})
+
 	}
 
 	router.Run(":8080")

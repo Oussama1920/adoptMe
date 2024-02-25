@@ -14,7 +14,7 @@ type PoolHandler interface {
 	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
 	Close()
 	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
-	// Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
+	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
 }
 
 type Db struct {
@@ -37,6 +37,7 @@ type DbHandler interface {
 	GetUserById(ctx context.Context, id string) (*User, error)
 	AddPet(ctx context.Context, pet Pet, userID string) (int, error)
 	GetPet(ctx context.Context, id int) (*Pet, error)
+	GetListPets(ctx context.Context, query string) ([]*Pet, error)
 }
 
 // NewDB establish a connection with the db and return a DbHandler

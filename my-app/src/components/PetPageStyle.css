@@ -1,0 +1,12 @@
+.pet-page {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pet-ad {
+    /* Add your styling here */
+    margin-top: 150px; /* Adjust as needed */
+  }
+  
+
+  

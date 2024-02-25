@@ -289,6 +289,21 @@ func GetPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to insert user", "error": err.Error()})
 		return
 	}
+	if pet.Photo != "" {
+		images := strings.TrimSuffix(pet.Photo, ",")
+		listImages := strings.Split(images, ",")
+		for _, val := range listImages {
+			logger.Info("found image : ", val)
+			// now let's get the list of images:
+			imageBytes, err := os.ReadFile(val)
+			if err != nil {
+				logger.Error(err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
+			}
+			dataURL := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+			pet.Images = append(pet.Images, db.Image{DataURL: dataURL})
+		}
+	}
 	c.IndentedJSON(http.StatusCreated, gin.H{"status": "success", "pet": pet})
 }
 

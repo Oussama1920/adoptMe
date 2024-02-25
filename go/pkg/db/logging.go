@@ -181,3 +181,12 @@ type Image struct {
 	DataURL string      `json:"data_url"`
 	File    interface{} `json:"file"`
 }
+
+type SearchPet struct {
+	Name          string `json:"name"`
+	Age           string `json:"age"`
+	Type          string `json:"type"`
+	CreatedBefore string `json:"created_before"`
+	CreatedAfter  string `json:"created_after"`
+	Available     bool   `json:"available"`
+}
