@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from "../components/Navbar"
 import "./PetPageStyle.css";
+import Pet from "./PetAnnonce";
 
 const PetPage = () => {
   const { id } = useParams();
@@ -26,7 +27,18 @@ const PetPage = () => {
         <h1>{pet.name}</h1>
         <p>Type: {pet.type}</p>
         <p>Age: {pet.age}</p>
-        <p>createdAt: {pet.created_at}</p>      
+        <p>createdAt: {pet.created_at}</p>
+        <div className="pet-images-grid">
+
+        <Pet
+                    type={pet.type}
+                    name={pet.name}
+                    age={pet.age}
+                    available={pet.available}
+                    images={pet.images}
+                    id={pet.id}
+        /> 
+        </div>   
         <div className="pet-images-grid">
           {pet.images && pet.images.length > 0 ? (
             pet.images.map((image, index) => (

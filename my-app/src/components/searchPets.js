@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './searchPetsStyle.css'; // Import the CSS file
 import { Link } from 'react-router-dom';
+import PetList from './PetList';
 
 const PetSearchAndResults = () => {
   const [searchParams, setSearchParams] = useState({
@@ -98,34 +99,10 @@ const PetSearchAndResults = () => {
 
         <button type="submit">Search</button>
       </form>
-
-      {/* Display search results */}
-      <div className="home-grid">
-        <ul className="pet-grid">
-          {searchResults.map(pet => (
-            <li key={pet.id} className="pet-item" >
-              <h3>{pet.name}</h3>
-              <p>Age: {pet.age}</p>
-              <p>Type: {pet.type}</p>
-              <p>Created At: {pet.created_at}</p>
-              <div className="pet-image-container">
-                {pet.images && pet.images.length > 0 && (
-                  <ul>
-                    {pet.images.map((image, index) => (
-                      <li key={index}>
-                        <img src={image.data_url} alt={`Pet ${index + 1}`} className="pet-image"/>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <Link to={`/pet/${pet.id}`}>
-                 <button>View Details</button>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <div className="pet-list-container">
+        <PetList pets={searchResults} />
       </div>
+
     </div>
   );
 };

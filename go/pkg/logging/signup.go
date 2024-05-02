@@ -270,6 +270,7 @@ func UpdateUser(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 func GetPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 
 	id := c.Param("id")
+	logger.Info("id is : ", id)
 	if id == "" {
 		logger.Error("id should not be empty")
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "id is empty"})
@@ -279,26 +280,32 @@ func GetPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 	petID, err := strconv.Atoi(id)
 	if err != nil {
 		// If conversion fails, return an error response
+		logger.Errorf("id not found for %s", id)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID, id should be an int"})
 		return
 	}
 
 	pet, err := dbHandler.GetPet(c, petID)
 	if err != nil {
-		logger.Error(err)
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to insert user", "error": err.Error()})
+		logger.Errorf("failed to get pet:  %s", err.Error())
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to get pet", "error": err.Error()})
 		return
 	}
+
 	if pet.Photo != "" {
 		images := strings.TrimSuffix(pet.Photo, ",")
 		listImages := strings.Split(images, ",")
 		for _, val := range listImages {
 			logger.Info("found image : ", val)
+			logger.Info("pet is : ", pet)
+
 			// now let's get the list of images:
 			imageBytes, err := os.ReadFile(val)
 			if err != nil {
 				logger.Error(err)
-				c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
+				//	c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
+				c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "pet": pet})
+				return
 			}
 			dataURL := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
 			pet.Images = append(pet.Images, db.Image{DataURL: dataURL})

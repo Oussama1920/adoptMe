@@ -42,7 +42,9 @@ func SearchPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 			imageBytes, err := os.ReadFile(listImages[0])
 			if err != nil {
 				logger.Error(err)
-				c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
+				//	c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
+				c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "pets": pets})
+				return
 			}
 			dataURL := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
 			pet.Images = append(pet.Images, db.Image{DataURL: dataURL})

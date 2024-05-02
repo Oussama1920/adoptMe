@@ -1,0 +1,53 @@
+.pet {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    position: relative; /* Ensure relative positioning for absolute positioning of image */
+}
+
+.pet-img {
+    width: 100%; /* Adjust image width as needed */
+    height: 70%;
+    border-radius: 8px; /* Apply border radius to match the parent container */
+}
+
+.pet p {
+    font-size: 1.25rem;
+    text-align: center;
+    font-style: italic;
+    color: black; /* Default text color */
+    margin-top: 0.5rem; /* Add margin between image and name */
+}
+
+
+@keyframes animate-in {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+.availability-bubble {
+    position: absolute;
+    top: -20px; /* Adjust the vertical position of the bubble */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #9c7eee;
+    color: white;
+    border-radius: 16px;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.availability-bubble.available {
+    background-color: green;
+}
+
+.availability-bubble.adopted {
+    background-color: red;
+}
