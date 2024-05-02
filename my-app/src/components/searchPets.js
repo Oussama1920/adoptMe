@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './searchPetsStyle.css'; // Import the CSS file
+import { Link } from 'react-router-dom';
 
 const PetSearchAndResults = () => {
   const [searchParams, setSearchParams] = useState({
@@ -36,7 +37,6 @@ const PetSearchAndResults = () => {
     .then(response => response.json())
     .then(data => {
       // Set search results
-      console.log("result is:",data)
   
       console.log("pets are:",data.pets)
       setSearchResults(data.pets);
@@ -100,26 +100,28 @@ const PetSearchAndResults = () => {
       </form>
 
       {/* Display search results */}
-      <div>
-        <h2>Search Results</h2>
-        <ul>
+      <div className="home-grid">
+        <ul className="pet-grid">
           {searchResults.map(pet => (
-            <li key={pet.id}>
+            <li key={pet.id} className="pet-item" >
               <h3>{pet.name}</h3>
               <p>Age: {pet.age}</p>
               <p>Type: {pet.type}</p>
               <p>Created At: {pet.created_at}</p>
-              <div>
+              <div className="pet-image-container">
                 {pet.images && pet.images.length > 0 && (
                   <ul>
                     {pet.images.map((image, index) => (
                       <li key={index}>
-                        <img src={image.data_url} alt={`Pet Image ${index + 1}`} />
+                        <img src={image.data_url} alt={`Pet ${index + 1}`} className="pet-image"/>
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
+              <Link to={`/pet/${pet.id}`}>
+                 <button>View Details</button>
+              </Link>
             </li>
           ))}
         </ul>

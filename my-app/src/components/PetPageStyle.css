@@ -1,12 +1,41 @@
 .pet-page {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .pet-ad {
-    /* Add your styling here */
-    margin-top: 150px; /* Adjust as needed */
-  }
-  
+  display: flex;
+  flex-direction: column;
+}
 
+.pet-ad {
+  /* Add your styling here */
+  margin-top: 150px; /* Adjust as needed */
+  text-align: center;
+}
+
+.pet-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 10px;
+  justify-items: auto; /* Center items horizontally within the grid */
+}
+
+.pet-images-grid img {
+  width: 100%;
+  height: auto;
+}
+
+.no-images-message {
+  display: flex;
+  grid-column: 1 / -1; /* Span across all columns */
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust height as needed */
+  text-align: center
+}
+.add-photo {
   
+  display: flex;
+  grid-column: 1 / -1; /* Span across all columns */
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust height as needed */
+  text-align: center
+
+}

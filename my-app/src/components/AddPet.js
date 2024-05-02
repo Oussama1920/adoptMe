@@ -1,5 +1,6 @@
 import "./AddPetStyle.css"
 import React ,{ useState } from 'react';
+import Navbar from './Navbar';
 
 import ImageUploading from "react-images-uploading";
 
@@ -53,6 +54,8 @@ const Results =() => {
     return (
 
         <div className="add-pet">
+          <Navbar/>
+
           <form id="addPetForm" onSubmit={handleSubmit}>
 
             <label for="name">Name:</label>

@@ -7,7 +7,6 @@ function Home(){
     return (
         <>
         <Navbar/>
-        <AddPet/>
         <PetSearchAndResults/>
         </>
     )

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from "../components/Navbar"
 import "./PetPageStyle.css";
-// todo : changing using JSON to fetch image to URLs ( it seems all websites are using this approach)
+
 const PetPage = () => {
   const { id } = useParams();
   const [pet, setPet] = useState(null);
@@ -21,22 +21,25 @@ const PetPage = () => {
 
   return (
     <div className="pet-page">
-    <Navbar/> 
-    <div className="pet-ad">
-      <h1>{pet.name}</h1>
-      <p>Type: {pet.type}</p>
-      <p>Age: {pet.age}</p>
-      <p>createdAt: {pet.created_at}</p>      
-      <div>
-        {pet.images && pet.images.length > 0 ? (
-          pet.images.map((image, index) => (
-            <img key={index} src={image.data_url} alt={`${pet.name} ${pet.type} ${index}`} />
-          ))
-        ) : (
-          <p>No images available</p>
-        )}
+      <Navbar /> 
+      <div className="pet-ad">
+        <h1>{pet.name}</h1>
+        <p>Type: {pet.type}</p>
+        <p>Age: {pet.age}</p>
+        <p>createdAt: {pet.created_at}</p>      
+        <div className="pet-images-grid">
+          {pet.images && pet.images.length > 0 ? (
+            pet.images.map((image, index) => (
+              <img key={index} src={image.data_url} alt={`${pet.name} ${pet.type} ${index}`} />
+            ))
+          ) : (
+              <div className="no-images-message">
+                <p>No images available</p>
+                <button className="add-photo">Click here to add Photo</button>
+              </div>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 };

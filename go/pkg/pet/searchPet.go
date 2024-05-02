@@ -36,19 +36,29 @@ func SearchPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 	// get list of photos:
 	for _, pet := range pets {
 		if pet.Photo != "" {
+
 			images := strings.TrimSuffix(pet.Photo, ",")
 			listImages := strings.Split(images, ",")
-			for _, val := range listImages {
-				logger.Info("found image : ", val)
-				// now let's get the list of images:
-				imageBytes, err := os.ReadFile(val)
-				if err != nil {
-					logger.Error(err)
-					c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
-				}
-				dataURL := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
-				pet.Images = append(pet.Images, db.Image{DataURL: dataURL})
+			imageBytes, err := os.ReadFile(listImages[0])
+			if err != nil {
+				logger.Error(err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
 			}
+			dataURL := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+			pet.Images = append(pet.Images, db.Image{DataURL: dataURL})
+			/*
+				for _, val := range listImages {
+					logger.Info("found image : ", val)
+					// now let's get the list of images:
+					imageBytes, err := os.ReadFile(val)
+					if err != nil {
+						logger.Error(err)
+						c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read image file"})
+					}
+					dataURL := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(imageBytes)
+					pet.Images = append(pet.Images, db.Image{DataURL: dataURL})
+				}
+			*/
 		}
 	}
 	c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "pets": pets})

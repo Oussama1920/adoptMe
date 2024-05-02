@@ -5,14 +5,12 @@ import Navbar from './Navbar';
 import './LoginStyle.css'; // Import CSS file for Login component styling
 import { AiOutlineCloseCircle } from 'react-icons/ai'; // Import the error icon from react-icons library
 
-const LOGIN_URL = '/v1/login';
 
 export const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth(); // Extract the login function from the useAuth hook
 
     const userRef = useRef();
-    const errRef = useRef();
 
     const [email, setEmail] = useState('');
     const [password, setPwd] = useState('');

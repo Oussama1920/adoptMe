@@ -6,6 +6,12 @@ export const MenuItems = [
         icon : "fa-solid fa-cat"
     },
     {
+        title : "add annonce",
+        url : "/addPet" ,
+        cName :"nav-links",
+        icon : "fa-solid fa-paw"
+    },
+    {
         title : "About",
         url : "/about" ,
         cName :"nav-links",

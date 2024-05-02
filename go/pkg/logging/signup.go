@@ -65,7 +65,7 @@ func SignUp(dbHandler db.DbHandler, ctx context.Context, logger *logrus.Logger) 
 		}
 		// ? Send Email
 		emailData := utilis.EmailData{
-			URL:       "http://localhost:3000" + "/verify-email/" + code,
+			URL:       "http://localhost:3001" + "/verify-email/" + code,
 			FirstName: newUser.Name,
 			Subject:   "Your account verification code",
 		}
@@ -304,6 +304,7 @@ func GetPet(c *gin.Context, dbHandler db.DbHandler, logger *logrus.Logger) {
 			pet.Images = append(pet.Images, db.Image{DataURL: dataURL})
 		}
 	}
+	logger.Info("Pet: ", pet)
 	c.IndentedJSON(http.StatusCreated, gin.H{"status": "success", "pet": pet})
 }
 

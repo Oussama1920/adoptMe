@@ -1,25 +1,20 @@
-import React, {Component, useState} from "react";
+import React  from "react";
 import './App.css';
 import {Login} from "./components/Login";
 import {Register} from "./components/Register";
-import Navbar from "./components/Navbar";
 import {Route, Routes} from "react-router-dom";
 import Home from "./routes/Home";
-import Signup from "./routes/Signup";
 import About from "./routes/About";
 import Contact from "./routes/Contact";
 import Account from "./components/Account";
 import Admin from "./components/Admin";
 import RequireAuth from "./components/RequireAuth"
 import Pet from "./components/PetPage"
+import AddPet from "./components/AddPet";
 
 import {EmailVerification} from "./components/EmailVerification"
 function App() {
-  const [currentForm,setCurrentForm] = useState('login');
-  const [auth,setAuth] = React.useState(false);
-  const toggleForm = (forName) => {
-    setCurrentForm(forName);
-  }
+  
   const ROLES = {
     'User': 2001,
     'Editor': 1984,
@@ -40,6 +35,7 @@ function App() {
         <Route path="/verify-email/:token" element={<EmailVerification/>}/>
         <Route path="/account" element={<Account/>}/>
         <Route path="/pet/:id" element={<Pet/>}/>
+        <Route path="/addPet" element={<AddPet/>}/>
        </Routes>
     </div>
   );

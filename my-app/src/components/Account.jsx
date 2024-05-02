@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import Navbar from "../components/Navbar"
-import Hero from "../components/Hero";
-import AboutImg from "../assets/pet1.jpg"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
